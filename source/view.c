@@ -465,6 +465,17 @@ gboolean rofi_view_set_slider_changed_handler(RofiViewState *state,
   return TRUE;
 }
 
+gboolean rofi_view_set_message_text(RofiViewState *state, const char *text) {
+  if (state == NULL || state->mesg_tb == NULL || text == NULL) {
+    return FALSE;
+  }
+
+  textbox_text(state->mesg_tb, text);
+  widget_enable(WIDGET(state->mesg_box));
+  widget_queue_redraw(WIDGET(state->mesg_tb));
+  return TRUE;
+}
+
 /**
  * Create a new, 0 initialized RofiViewState structure.
  *

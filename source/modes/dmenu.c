@@ -856,15 +856,49 @@ static gboolean dmenu_print_slider_result(RofiViewState *state,
   return TRUE;
 }
 
+static char *dmenu_format_slider_message(const char *template, int value) {
+  const char *needle = "{value}";
+  char rounded_str[32];
+  GString *result;
+  const char *cursor;
+  const char *match;
+
+  if (template == NULL || strstr(template, needle) == NULL) {
+    return NULL;
+  }
+
+  g_snprintf(rounded_str, sizeof(rounded_str), "%d", value);
+  result = g_string_new(NULL);
+  cursor = template;
+  while ((match = strstr(cursor, needle)) != NULL) {
+    g_string_append_len(result, cursor, (gsize)(match - cursor));
+    g_string_append(result, rounded_str);
+    cursor = match + strlen(needle);
+  }
+  g_string_append(result, cursor);
+  return g_string_free(result, FALSE);
+}
+
 static void dmenu_slider_changed(G_GNUC_UNUSED slider *sl, double value,
                                  void *user_data) {
   DmenuModePrivateData *pd = (DmenuModePrivateData *)user_data;
+  int rounded = (int)(value + 0.5);
+
+  if (pd != NULL && pd->message != NULL &&
+      strstr(pd->message, "{value}") != NULL) {
+    RofiViewState *state = rofi_view_get_active();
+    char *formatted = dmenu_format_slider_message(pd->message, rounded);
+    if (state != NULL && formatted != NULL) {
+      rofi_view_set_message_text(state, formatted);
+      g_free(formatted);
+    }
+  }
+
   if (pd == NULL || pd->slider_change_command == NULL ||
       pd->slider_change_command[0] == '\0') {
     return;
   }
 
-  int rounded = (int)(value + 0.5);
   if (pd->slider_last_value == rounded) {
     return;
   }
@@ -1128,10 +1162,24 @@ int dmenu_mode_dialog(void) {
       rofi_view_set_slider_value(state, slider_name,
                                  g_ascii_strtod(slider_value, NULL), NULL);
     }
-    if (slider_name != NULL && pd->slider_change_command != NULL &&
-        pd->slider_change_command[0] != '\0') {
+    if (slider_name != NULL &&
+        ((pd->slider_change_command != NULL &&
+          pd->slider_change_command[0] != '\0') ||
+         (pd->message != NULL && strstr(pd->message, "{value}") != NULL))) {
       rofi_view_set_slider_changed_handler(state, slider_name,
                                            dmenu_slider_changed, pd);
+      {
+        double initial_value = 0.0;
+        char *formatted = NULL;
+        if (rofi_view_get_slider_value(state, slider_name, &initial_value)) {
+          formatted =
+              dmenu_format_slider_message(pd->message, (int)(initial_value + 0.5));
+          if (formatted != NULL) {
+            rofi_view_set_message_text(state, formatted);
+            g_free(formatted);
+          }
+        }
+      }
     }
   }
   rofi_view_set_active(state);

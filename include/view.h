@@ -188,6 +188,16 @@ gboolean rofi_view_set_slider_changed_handler(RofiViewState *state,
                                               void *user_data);
 
 /**
+ * @param state the Menu handle
+ * @param text Pango markup message to show in the message bar.
+ *
+ * Updates the message textbox directly. Useful for live slider feedback.
+ *
+ * @returns TRUE if the message bar exists.
+ */
+gboolean rofi_view_set_message_text(RofiViewState *state, const char *text);
+
+/**
  * @param state The Menu Handle
  * @param selected_line The line to select.
  *
