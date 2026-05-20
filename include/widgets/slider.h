@@ -70,13 +70,27 @@ typedef void (*slider_changed_cb)(slider *sl, double value, void *user_data);
 slider *slider_create(widget *parent, const char *name);
 
 /**
+ * @param parent The parent widget.
+ * @param name The name of the widget.
+ * @param value Initial value supplied by the application.
+ *
+ * Create a new slider and override the theme `value` with an application
+ * supplied initial value. The value is still clamped to the theme/API range and
+ * snapped to the configured step.
+ */
+slider *slider_create_with_value(widget *parent, const char *name,
+                                 double value);
+
+/**
  * @param sl Slider object.
  * @param min Minimum value.
  * @param max Maximum value.
  *
  * Set the slider range. If min is greater than max they are swapped.
+ *
+ * @returns the current value after applying the new range.
  */
-void slider_set_range(slider *sl, double min, double max);
+double slider_set_range(slider *sl, double min, double max);
 
 double slider_get_min(const slider *sl);
 double slider_get_max(const slider *sl);
@@ -86,16 +100,20 @@ double slider_get_max(const slider *sl);
  * @param value New value.
  *
  * Set the slider value, clamped to the current range and snapped to the step.
+ *
+ * @returns the normalized value stored by the slider.
  */
-void slider_set_value(slider *sl, double value);
+double slider_set_value(slider *sl, double value);
 
 double slider_get_value(const slider *sl);
 
 /**
  * @param sl Slider object.
  * @param step Step interval. Values <= 0 disable snapping.
+ *
+ * @returns the current value after applying the new step.
  */
-void slider_set_step(slider *sl, double step);
+double slider_set_step(slider *sl, double step);
 
 double slider_get_step(const slider *sl);
 

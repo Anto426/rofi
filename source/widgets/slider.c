@@ -135,7 +135,8 @@ static void slider_draw_rounded_rect(cairo_t *draw, double x, double y,
   cairo_fill(draw);
 }
 
-slider *slider_create(widget *parent, const char *name) {
+static slider *slider_create_internal(widget *parent, const char *name,
+                                      const double *initial_value) {
   slider *sl = g_malloc0(sizeof(slider));
   widget_init(WIDGET(sl), parent, WIDGET_TYPE_SLIDER, name);
   sl->widget.cursor_type =
@@ -155,8 +156,11 @@ slider *slider_create(widget *parent, const char *name) {
                                             DEFAULT_SLIDER_TRACK_WIDTH);
   sl->handle_width = rofi_theme_get_distance(WIDGET(sl), "handle-width",
                                              DEFAULT_SLIDER_HANDLE_WIDTH);
-  sl->value = slider_normalize_value(
-      sl, rofi_theme_get_double(WIDGET(sl), "value", sl->min));
+  sl->value =
+      slider_normalize_value(sl, initial_value != NULL
+                                     ? *initial_value
+                                     : rofi_theme_get_double(WIDGET(sl),
+                                                             "value", sl->min));
 
   sl->widget.draw = slider_draw;
   sl->widget.free = slider_free;
@@ -170,11 +174,20 @@ slider *slider_create(widget *parent, const char *name) {
   return sl;
 }
 
+slider *slider_create(widget *parent, const char *name) {
+  return slider_create_internal(parent, name, NULL);
+}
+
+slider *slider_create_with_value(widget *parent, const char *name,
+                                 double value) {
+  return slider_create_internal(parent, name, &value);
+}
+
 static void slider_free(widget *wid) { g_free((slider *)wid); }
 
-void slider_set_range(slider *sl, double min, double max) {
+double slider_set_range(slider *sl, double min, double max) {
   if (sl == NULL) {
-    return;
+    return 0.0;
   }
   if (min > max) {
     double tmp = min;
@@ -185,27 +198,30 @@ void slider_set_range(slider *sl, double min, double max) {
   sl->max = max;
   slider_set_value_internal(sl, sl->value, TRUE);
   widget_queue_redraw(WIDGET(sl));
+  return sl->value;
 }
 
 double slider_get_min(const slider *sl) { return sl != NULL ? sl->min : 0.0; }
 
 double slider_get_max(const slider *sl) { return sl != NULL ? sl->max : 0.0; }
 
-void slider_set_value(slider *sl, double value) {
+double slider_set_value(slider *sl, double value) {
   slider_set_value_internal(sl, value, TRUE);
+  return slider_get_value(sl);
 }
 
 double slider_get_value(const slider *sl) {
   return sl != NULL ? sl->value : 0.0;
 }
 
-void slider_set_step(slider *sl, double step) {
+double slider_set_step(slider *sl, double step) {
   if (sl == NULL) {
-    return;
+    return 0.0;
   }
   sl->step = MAX(0.0, step);
   slider_set_value_internal(sl, sl->value, TRUE);
   widget_queue_redraw(WIDGET(sl));
+  return sl->value;
 }
 
 double slider_get_step(const slider *sl) {

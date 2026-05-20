@@ -116,9 +116,9 @@ int main(G_GNUC_UNUSED int argc, G_GNUC_UNUSED char **argv) {
   slider *sl = slider_create(NULL, "slider");
   widget_resize(WIDGET(sl), 100, 20);
 
-  slider_set_range(NULL, 0.0, 10.0);
-  slider_set_value(NULL, 10.0);
-  slider_set_step(NULL, 1.0);
+  TASSERTD(slider_set_range(NULL, 0.0, 10.0), 0.0);
+  TASSERTD(slider_set_value(NULL, 10.0), 0.0);
+  TASSERTD(slider_set_step(NULL, 1.0), 0.0);
   slider_set_orientation(NULL, ROFI_ORIENTATION_VERTICAL);
   slider_set_changed_handler(NULL, slider_changed, NULL);
 
@@ -126,29 +126,29 @@ int main(G_GNUC_UNUSED int argc, G_GNUC_UNUSED char **argv) {
   TASSERTD(slider_get_max(sl), 100.0);
   TASSERTD(slider_get_value(sl), 0.0);
 
-  slider_set_range(sl, 0.0, 100.0);
-  slider_set_value(sl, 40.0);
+  TASSERTD(slider_set_range(sl, 0.0, 100.0), 0.0);
+  TASSERTD(slider_set_value(sl, 40.0), 40.0);
   TASSERTD(slider_get_value(sl), 40.0);
-  slider_set_value(sl, -10.0);
+  TASSERTD(slider_set_value(sl, -10.0), 0.0);
   TASSERTD(slider_get_value(sl), 0.0);
-  slider_set_value(sl, 110.0);
+  TASSERTD(slider_set_value(sl, 110.0), 100.0);
   TASSERTD(slider_get_value(sl), 100.0);
 
-  slider_set_step(sl, 5.0);
+  TASSERTD(slider_set_step(sl, 5.0), 100.0);
   TASSERTD(slider_get_step(sl), 5.0);
-  slider_set_value(sl, 42.0);
+  TASSERTD(slider_set_value(sl, 42.0), 40.0);
   TASSERTD(slider_get_value(sl), 40.0);
-  slider_set_value(sl, 43.0);
+  TASSERTD(slider_set_value(sl, 43.0), 45.0);
   TASSERTD(slider_get_value(sl), 45.0);
 
   slider_set_changed_handler(sl, slider_changed, NULL);
-  slider_set_value(sl, 50.0);
+  TASSERTD(slider_set_value(sl, 50.0), 50.0);
   TASSERTD(callback_value, 50.0);
   TASSERT(callback_count == 1);
-  slider_set_value(sl, 50.0);
+  TASSERTD(slider_set_value(sl, 50.0), 50.0);
   TASSERT(callback_count == 1);
 
-  slider_set_step(sl, 0.0);
+  TASSERTD(slider_set_step(sl, 0.0), 50.0);
   TASSERTD(slider_get_value_from_position(sl, 0, 10), 0.0);
   TASSERTD(slider_get_value_from_position(sl, 50, 10), 50.0);
   TASSERTD(slider_get_value_from_position(sl, 99, 10), 100.0);
@@ -169,9 +169,41 @@ int main(G_GNUC_UNUSED int argc, G_GNUC_UNUSED char **argv) {
   TASSERTD(slider_get_value_from_position(sl, 10, 50), 50.0);
   TASSERTD(slider_get_value_from_position(sl, 10, 99), 100.0);
 
-  slider_set_range(sl, 100.0, 0.0);
+  TASSERTD(slider_set_range(sl, 100.0, 0.0), 0.0);
   TASSERTD(slider_get_min(sl), 0.0);
   TASSERTD(slider_get_max(sl), 100.0);
 
+  widget_free(WIDGET(sl));
+
+  sl = slider_create_with_value(NULL, "slider", 37.0);
+  TASSERTD(slider_get_value(sl), 37.0);
+  widget_free(WIDGET(sl));
+
+  rofi_theme_parse_string("slider-themed {"
+                          "  min: -10;"
+                          "  max: 10;"
+                          "  value: 4.2;"
+                          "  step: 0.5;"
+                          "  orientation: vertical;"
+                          "  width: 24px;"
+                          "  height: 120px;"
+                          "  padding: 2px;"
+                          "  track-width: 6px;"
+                          "  handle-width: 14px;"
+                          "}");
+  sl = slider_create(NULL, "slider-themed");
+  TASSERTD(slider_get_min(sl), -10.0);
+  TASSERTD(slider_get_max(sl), 10.0);
+  TASSERTD(slider_get_value(sl), 4.0);
+  TASSERTD(slider_get_step(sl), 0.5);
+  TASSERT(slider_get_orientation(sl) == ROFI_ORIENTATION_VERTICAL);
+  TASSERT(widget_get_desired_width(WIDGET(sl), 0) == 24);
+  TASSERT(widget_get_desired_height(WIDGET(sl), 24) == 120);
+  widget_resize(WIDGET(sl), 24, 120);
+  TASSERTD(slider_get_value_from_position(sl, 12, 60), 0.0);
+  widget_free(WIDGET(sl));
+
+  sl = slider_create_with_value(NULL, "slider-themed", 11.0);
+  TASSERTD(slider_get_value(sl), 10.0);
   widget_free(WIDGET(sl));
 }

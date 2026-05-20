@@ -146,6 +146,32 @@ unsigned int rofi_view_get_completed(const RofiViewState *state);
 const char *rofi_view_get_user_input(const RofiViewState *state);
 
 /**
+ * @param state the Menu handle
+ * @param name The slider widget name.
+ * @param value Location to store the slider value.
+ *
+ * Returns the current value for a named slider in this view.
+ *
+ * @returns TRUE if a slider with this name exists.
+ */
+gboolean rofi_view_get_slider_value(const RofiViewState *state,
+                                    const char *name, double *value);
+
+/**
+ * @param state the Menu handle
+ * @param name The slider widget name.
+ * @param value Value to store in the slider.
+ * @param normalized_value Optional location to store the normalized value.
+ *
+ * Set the current value for a named slider in this view. The value is clamped
+ * to the slider range and snapped to its step.
+ *
+ * @returns TRUE if a slider with this name exists.
+ */
+gboolean rofi_view_set_slider_value(RofiViewState *state, const char *name,
+                                    double value, double *normalized_value);
+
+/**
  * @param state The Menu Handle
  * @param selected_line The line to select.
  *

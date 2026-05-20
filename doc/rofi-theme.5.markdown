@@ -1360,7 +1360,9 @@ button-paste {
 
 This is a generic draggable value widget. It accepts `min`, `max`, `step` and
 `value` so themes can define its numeric range without tying it to a specific
-feature.
+feature. The application can retrieve the current value by widget name through
+`rofi_view_get_slider_value()` and can override it with
+`rofi_view_set_slider_value()`.
 
 ```css
 slider-volume {

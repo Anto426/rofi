@@ -126,6 +126,9 @@ struct RofiViewState {
   /** Extra icon widget that shows the current selected entries icon. */
   icon *icon_current_entry;
 
+  /** Named slider widgets in this view. */
+  GHashTable *sliders;
+
   /** Settings of the menu */
   MenuFlags menu_flags;
   /** If mouse was within view previously */

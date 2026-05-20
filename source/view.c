@@ -372,6 +372,7 @@ void rofi_view_free(RofiViewState *state) {
     helper_tokenize_free(state->tokens);
     state->tokens = NULL;
   }
+  g_clear_pointer(&state->sliders, g_hash_table_destroy);
   // Do this here?
   // Wait for final release?
   widget_free(WIDGET(state->main_window));
@@ -411,6 +412,40 @@ const char *rofi_view_get_user_input(const RofiViewState *state) {
     return state->text->text;
   }
   return NULL;
+}
+
+gboolean rofi_view_get_slider_value(const RofiViewState *state,
+                                    const char *name, double *value) {
+  if (state == NULL || state->sliders == NULL || name == NULL ||
+      value == NULL) {
+    return FALSE;
+  }
+
+  slider *sl = g_hash_table_lookup(state->sliders, name);
+  if (sl == NULL) {
+    return FALSE;
+  }
+
+  *value = slider_get_value(sl);
+  return TRUE;
+}
+
+gboolean rofi_view_set_slider_value(RofiViewState *state, const char *name,
+                                    double value, double *normalized_value) {
+  if (state == NULL || state->sliders == NULL || name == NULL) {
+    return FALSE;
+  }
+
+  slider *sl = g_hash_table_lookup(state->sliders, name);
+  if (sl == NULL) {
+    return FALSE;
+  }
+
+  double normalized = slider_set_value(sl, value);
+  if (normalized_value != NULL) {
+    *normalized_value = normalized;
+  }
+  return TRUE;
 }
 
 /**
@@ -1613,6 +1648,16 @@ static void rofi_view_listview_mouse_activated_cb(listview *lv, gboolean custom,
   state->skip_absorb = TRUE;
 }
 
+static void rofi_view_register_slider(RofiViewState *state, slider *sl) {
+  if (state == NULL || sl == NULL) {
+    return;
+  }
+  if (state->sliders == NULL) {
+    state->sliders = g_hash_table_new(g_str_hash, g_str_equal);
+  }
+  g_hash_table_replace(state->sliders, WIDGET(sl)->name, sl);
+}
+
 static void rofi_view_add_widget(RofiViewState *state, widget *parent_widget,
                                  const char *name) {
   char *defaults = NULL;
@@ -1785,6 +1830,7 @@ static void rofi_view_add_widget(RofiViewState *state, widget *parent_widget,
                                       state);
   } else if (g_ascii_strncasecmp(name, "slider", 6) == 0) {
     slider *t = slider_create(parent_widget, name);
+    rofi_view_register_slider(state, t);
     box_add((box *)parent_widget, WIDGET(t), TRUE);
   } else if (g_ascii_strncasecmp(name, "icon", 4) == 0) {
     icon *t = icon_create(parent_widget, name);
