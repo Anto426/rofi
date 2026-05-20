@@ -29,6 +29,7 @@
 #define ROFI_VIEW_H
 
 #include "mode.h"
+#include "widgets/slider.h"
 #include "widgets/textbox.h"
 #include "widgets/widget.h"
 #include <pango/pango.h>
@@ -170,6 +171,21 @@ gboolean rofi_view_get_slider_value(const RofiViewState *state,
  */
 gboolean rofi_view_set_slider_value(RofiViewState *state, const char *name,
                                     double value, double *normalized_value);
+
+/**
+ * @param state the Menu handle
+ * @param name The slider widget name.
+ * @param cb Callback to run when the slider value changes.
+ * @param user_data Pointer passed to the callback.
+ *
+ * Set a changed callback for a named slider in this view.
+ *
+ * @returns TRUE if a slider with this name exists.
+ */
+gboolean rofi_view_set_slider_changed_handler(RofiViewState *state,
+                                              const char *name,
+                                              slider_changed_cb cb,
+                                              void *user_data);
 
 /**
  * @param state The Menu Handle

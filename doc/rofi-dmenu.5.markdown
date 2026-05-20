@@ -216,6 +216,19 @@ Set ellipsize mode on the listview.
 
 *default* "end"
 
+`-slider-name` *name*
+
+On accept, print the rounded value of the named slider widget to stdout.
+
+`-slider-value` *number*
+
+Initial value for the slider named with `-slider-name`.
+
+`-slider-change-command` *command*
+
+Run *command* whenever the named slider value changes. The command supports
+`{value}` for the rounded value and `{raw-value}` for the raw double value.
+
 ## PARSING ROW OPTIONS
 
 Extra options for individual rows can be also set. See the **rofi-script(5)**

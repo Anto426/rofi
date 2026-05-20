@@ -113,6 +113,8 @@ typedef struct {
 
   char *ballot_selected;
   char *ballot_unselected;
+  char *slider_change_command;
+  int slider_last_value;
 } DmenuModePrivateData;
 
 /** Maximum number of lines rofi parses async before it pushes it to the main
@@ -546,8 +548,10 @@ static int dmenu_mode_init(Mode *sw) {
 
   pd->separator = '\n';
   pd->selected_line = UINT32_MAX;
+  pd->slider_last_value = G_MININT;
 
   find_arg_str("-mesg", &(pd->message));
+  find_arg_str("-slider-change-command", &(pd->slider_change_command));
 
   // Input data separator.
   find_arg_char("-sep", &(pd->separator));
@@ -852,6 +856,34 @@ static gboolean dmenu_print_slider_result(RofiViewState *state,
   return TRUE;
 }
 
+static void dmenu_slider_changed(G_GNUC_UNUSED slider *sl, double value,
+                                 void *user_data) {
+  DmenuModePrivateData *pd = (DmenuModePrivateData *)user_data;
+  if (pd == NULL || pd->slider_change_command == NULL ||
+      pd->slider_change_command[0] == '\0') {
+    return;
+  }
+
+  int rounded = (int)(value + 0.5);
+  if (pd->slider_last_value == rounded) {
+    return;
+  }
+  pd->slider_last_value = rounded;
+
+  char value_str[G_ASCII_DTOSTR_BUF_SIZE];
+  char rounded_str[32];
+  g_ascii_dtostr(value_str, sizeof(value_str), value);
+  g_snprintf(rounded_str, sizeof(rounded_str), "%d", rounded);
+
+  char **args = NULL;
+  int argc = 0;
+  if (helper_parse_setup(pd->slider_change_command, &args, &argc, "{value}",
+                         rounded_str, "{raw-value}", value_str, (char *)0) &&
+      args != NULL) {
+    helper_execute(NULL, args, "", pd->slider_change_command, NULL);
+  }
+}
+
 static void dmenu_finalize(RofiViewState *state) {
   int retv = FALSE;
   DmenuModePrivateData *pd =
@@ -1096,6 +1128,11 @@ int dmenu_mode_dialog(void) {
       rofi_view_set_slider_value(state, slider_name,
                                  g_ascii_strtod(slider_value, NULL), NULL);
     }
+    if (slider_name != NULL && pd->slider_change_command != NULL &&
+        pd->slider_change_command[0] != '\0') {
+      rofi_view_set_slider_changed_handler(state, slider_name,
+                                           dmenu_slider_changed, pd);
+    }
   }
   rofi_view_set_active(state);
   if (pd->loading) {
@@ -1167,4 +1204,8 @@ void print_dmenu_options(void) {
   print_help_msg("-slider-value", "[number]",
                  "Initial value for the slider named with -slider-name.", NULL,
                  is_term);
+  print_help_msg("-slider-change-command", "[command]",
+                 "Run command whenever the named slider changes. Supports "
+                 "{value} and {raw-value} placeholders.",
+                 NULL, is_term);
 }

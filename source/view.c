@@ -448,6 +448,23 @@ gboolean rofi_view_set_slider_value(RofiViewState *state, const char *name,
   return TRUE;
 }
 
+gboolean rofi_view_set_slider_changed_handler(RofiViewState *state,
+                                              const char *name,
+                                              slider_changed_cb cb,
+                                              void *user_data) {
+  if (state == NULL || state->sliders == NULL || name == NULL) {
+    return FALSE;
+  }
+
+  slider *sl = g_hash_table_lookup(state->sliders, name);
+  if (sl == NULL) {
+    return FALSE;
+  }
+
+  slider_set_changed_handler(sl, cb, user_data);
+  return TRUE;
+}
+
 /**
  * Create a new, 0 initialized RofiViewState structure.
  *
