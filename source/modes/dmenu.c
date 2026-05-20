@@ -820,6 +820,38 @@ static void dmenu_print_results(DmenuModePrivateData *pd, const char *input) {
   }
 }
 
+static gboolean dmenu_should_emit_slider(MenuReturn mretv) {
+  if ((mretv & MENU_OK) != 0) {
+    return TRUE;
+  }
+  if ((mretv & MENU_CUSTOM_INPUT) != 0 && find_arg("-slider-name") >= 0) {
+    return TRUE;
+  }
+  return FALSE;
+}
+
+static gboolean dmenu_print_slider_result(RofiViewState *state,
+                                          MenuReturn mretv) {
+  char *slider_name = NULL;
+
+  if (!dmenu_should_emit_slider(mretv)) {
+    return FALSE;
+  }
+  if (find_arg_str("-slider-name", &slider_name) < 0 || slider_name == NULL ||
+      slider_name[0] == '\0') {
+    return FALSE;
+  }
+
+  double value = 0.0;
+  if (!rofi_view_get_slider_value(state, slider_name, &value)) {
+    return FALSE;
+  }
+
+  fprintf(stdout, "%d\n", (int)(value + 0.5));
+  fflush(stdout);
+  return TRUE;
+}
+
 static void dmenu_finalize(RofiViewState *state) {
   int retv = FALSE;
   DmenuModePrivateData *pd =
@@ -901,6 +933,12 @@ static void dmenu_finalize(RofiViewState *state) {
   }
   // We normally do not want to restart the loop.
   restart = FALSE;
+  if (dmenu_print_slider_result(state, mretv)) {
+    retv = TRUE;
+    g_free(input);
+    dmenu_finish(pd, state, retv);
+    return;
+  }
   // Normal mode
   if ((mretv & MENU_OK) && pd->selected_line != UINT32_MAX &&
       cmd_list[pd->selected_line].entry != NULL) {
@@ -1049,6 +1087,16 @@ int dmenu_mode_dialog(void) {
     }
   }
   rofi_view_set_selected_line(state, pd->selected_line);
+  {
+    char *slider_name = NULL;
+    char *slider_value = NULL;
+    if (find_arg_str("-slider-name", &slider_name) >= 0 && slider_name != NULL &&
+        find_arg_str("-slider-value", &slider_value) >= 0 &&
+        slider_value != NULL) {
+      rofi_view_set_slider_value(state, slider_name,
+                                 g_ascii_strtod(slider_value, NULL), NULL);
+    }
+  }
   rofi_view_set_active(state);
   if (pd->loading) {
     rofi_view_set_overlay(state, "Loading.. ");
@@ -1112,4 +1160,11 @@ void print_dmenu_options(void) {
                  NULL, is_term);
   print_help_msg("-ellipsize-mode", "end",
                  "Set ellipsize mode(start | middle | end).", NULL, is_term);
+  print_help_msg("-slider-name", "[string]",
+                 "On accept, print the rounded value of this slider widget to "
+                 "stdout.",
+                 NULL, is_term);
+  print_help_msg("-slider-value", "[number]",
+                 "Initial value for the slider named with -slider-name.", NULL,
+                 is_term);
 }
