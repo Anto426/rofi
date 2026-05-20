@@ -64,6 +64,8 @@ typedef enum {
   WIDGET_TYPE_SCROLLBAR = SCOPE_MOUSE_SCROLLBAR,
   /** A widget allowing user to swithc between modes */
   WIDGET_TYPE_MODE_SWITCHER = SCOPE_MOUSE_MODE_SWITCHER,
+  /** A draggable slider widget */
+  WIDGET_TYPE_SLIDER = SCOPE_MOUSE_SLIDER,
   /** Text-only textbox */
   WIDGET_TYPE_TEXTBOX_TEXT,
 } WidgetType;

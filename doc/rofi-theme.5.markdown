@@ -1018,6 +1018,24 @@ The following properties are currently supported:
 - **border-color**:        color
 - **handle-rounded-corners**:     boolean for rounded scrollbar
 
+### slider Properties
+
+- **min**:              number Minimum value.
+- **max**:              number Maximum value.
+- **value**:            number Initial value.
+- **step**:             number Snap interval. Use `0` for continuous values.
+- **orientation**:      orientation Set the direction of the slider.
+- **width**:            distance Override the desired width.
+- **height**:           distance Override the desired height.
+- **length**:           distance Desired long side when width/height is unset.
+- **track-width**:      distance Visual track thickness.
+- **handle-width**:     distance Visual handle size.
+- **track-color**:      color
+- **fill-color**:       color
+- **handle-color**:     color
+- **track-rounded-corners**:      boolean for rounded track.
+- **handle-rounded-corners**:     boolean for rounded handle.
+
 ### box
 
 - **orientation**:      orientation Set the direction the elements are packed.
@@ -1278,8 +1296,9 @@ figure above.
 - mainbox Packs: `inputbar, message, listview, mode-switcher`
 - inputbar Packs: `prompt,entry,case-indicator`
 
-Any widget name starting with `textbox` is a textbox widget, others are box
-widgets and can pack other widgets.
+Any widget name starting with `textbox` is a textbox widget, any widget name
+starting with `slider` is a slider widget, others are box widgets and can pack
+other widgets.
 
 There are several special widgets that can be used by prefixing the name of the
 widget:
@@ -1334,6 +1353,22 @@ button-paste {
     content: "My Clickable Message";
     vertical-align: 0.5;
     action: "kb-primary-paste";
+}
+```
+
+#### Slider
+
+This is a generic draggable value widget. It accepts `min`, `max`, `step` and
+`value` so themes can define its numeric range without tying it to a specific
+feature.
+
+```css
+slider-volume {
+    expand: true;
+    min: 0;
+    max: 100;
+    step: 5;
+    value: 50;
 }
 ```
 

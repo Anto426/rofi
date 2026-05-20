@@ -246,6 +246,7 @@ rofi_sources = files(
         'source/widgets/textbox.c',
         'source/widgets/listview.c',
         'source/widgets/scrollbar.c',
+        'source/widgets/slider.c',
         'source/xrmoptions.c',
         'source/rofi-types.c',
         'source/modes/run.c',
@@ -282,6 +283,7 @@ rofi_sources = files(
         'include/widgets/textbox.h',
         'include/widgets/listview.h',
         'include/widgets/scrollbar.h',
+        'include/widgets/slider.h',
         'include/xrmoptions.h',
         'include/modes/ssh.h',
         'include/modes/run.h',
@@ -498,6 +500,24 @@ test('scrollbar test', executable('scrollbar.test', [
     objects: rofi.extract_objects([
         'source/widgets/widget.c',
         'source/widgets/scrollbar.c',
+        'source/theme.c',
+        'source/css-colors.c',
+        'source/rofi-types.c',
+        'source/css-colors.c',
+        'config/config.c',
+    ]),
+    dependencies: deps,
+))
+
+test('slider test', executable('slider.test', [
+        'test/slider-test.c',
+        theme_parser,
+        theme_lexer,
+        default_theme,
+    ],
+    objects: rofi.extract_objects([
+        'source/widgets/widget.c',
+        'source/widgets/slider.c',
         'source/theme.c',
         'source/css-colors.c',
         'source/rofi-types.c',

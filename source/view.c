@@ -1356,7 +1356,8 @@ gboolean rofi_view_check_action(RofiViewState *state, BindingsScope scope,
   case SCOPE_MOUSE_LISTVIEW_ELEMENT:
   case SCOPE_MOUSE_EDITBOX:
   case SCOPE_MOUSE_SCROLLBAR:
-  case SCOPE_MOUSE_MODE_SWITCHER: {
+  case SCOPE_MOUSE_MODE_SWITCHER:
+  case SCOPE_MOUSE_SLIDER: {
     gint x = state->mouse.x, y = state->mouse.y;
     widget *target = widget_find_mouse_target(WIDGET(state->main_window),
                                               (WidgetType)scope, x, y);
@@ -1389,7 +1390,8 @@ void rofi_view_trigger_action(RofiViewState *state, BindingsScope scope,
   case SCOPE_MOUSE_LISTVIEW_ELEMENT:
   case SCOPE_MOUSE_EDITBOX:
   case SCOPE_MOUSE_SCROLLBAR:
-  case SCOPE_MOUSE_MODE_SWITCHER: {
+  case SCOPE_MOUSE_MODE_SWITCHER:
+  case SCOPE_MOUSE_SLIDER: {
     gint x = state->mouse.x, y = state->mouse.y;
     // If we already captured a motion, always forward action to this widget.
     widget *target = state->mouse.motion_target;
@@ -1781,6 +1783,9 @@ static void rofi_view_add_widget(RofiViewState *state, widget *parent_widget,
     box_add((box *)parent_widget, WIDGET(t), TRUE);
     widget_set_trigger_action_handler(WIDGET(t), textbox_button_trigger_action,
                                       state);
+  } else if (g_ascii_strncasecmp(name, "slider", 6) == 0) {
+    slider *t = slider_create(parent_widget, name);
+    box_add((box *)parent_widget, WIDGET(t), TRUE);
   } else if (g_ascii_strncasecmp(name, "icon", 4) == 0) {
     icon *t = icon_create(parent_widget, name);
     /* small hack to make it clickable */

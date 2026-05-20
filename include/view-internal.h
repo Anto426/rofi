@@ -36,6 +36,7 @@
 #include "widgets/container.h"
 #include "widgets/icon.h"
 #include "widgets/listview.h"
+#include "widgets/slider.h"
 #include "widgets/textbox.h"
 #include "widgets/widget.h"
 
