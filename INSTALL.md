@@ -172,6 +172,38 @@ or to install locally:
     meson setup build --prefix ${HOME}/.local
 ```
 
+### Anto426 Arch-Hyprland local install
+
+The Anto426 dotfiles use this rofi fork for themed slider controls. The
+recommended Arch install keeps the custom build isolated from the system rofi
+package and exposes it through `~/.local/bin/rofi`.
+
+Install build dependencies:
+
+```bash
+sudo pacman -S --needed base-devel git meson ninja pkgconf flex bison check pandoc doxygen \
+  glib2 cairo pango gdk-pixbuf2 startup-notification libxkbcommon libxcb \
+  xcb-util xcb-util-wm xcb-util-cursor xcb-util-keysyms xcb-imdkit \
+  wayland wayland-protocols
+```
+
+Build and install:
+
+```bash
+git clone --recursive https://github.com/Anto426/rofi ~/Git/arch/rofi
+meson setup ~/Git/arch/rofi/build-anto426 ~/Git/arch/rofi --prefix ~/.local/rofi-anto426
+meson compile -C ~/Git/arch/rofi/build-anto426
+meson install -C ~/Git/arch/rofi/build-anto426
+mkdir -p ~/.local/bin
+ln -sfn ~/.local/rofi-anto426/bin/rofi ~/.local/bin/rofi
+```
+
+Check that the slider dmenu options are available:
+
+```bash
+~/.local/bin/rofi -help | grep slider
+```
+
 ### Verbose build output
 
 Show the commands called (when using ninja):

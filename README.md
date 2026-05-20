@@ -121,6 +121,11 @@ Its main features are:
 
 - Advanced Theming
 
+- Generic slider widgets for themed control panels
+  - `min`, `max`, `step`, and initial `value` can come from the theme or the application
+  - dmenu can print a slider value with `-slider-name`
+  - dmenu can update an external script live with `-slider-change-command`
+
 ## Modes
 
 **Rofi** has several built-in modes implementing common use cases and can be
@@ -215,6 +220,32 @@ new issue.
 
 Please see the [installation guide](INSTALL.md) for instructions on how to
 install **Rofi**.
+
+### Anto426 Arch-Hyprland build
+
+This fork is used by the Anto426 Arch-Hyprland dotfiles for live audio,
+microphone, and brightness slider panels. On Arch, install the build
+dependencies and install into a user prefix:
+
+```bash
+sudo pacman -S --needed base-devel git meson ninja pkgconf flex bison check pandoc doxygen \
+  glib2 cairo pango gdk-pixbuf2 startup-notification libxkbcommon libxcb \
+  xcb-util xcb-util-wm xcb-util-cursor xcb-util-keysyms xcb-imdkit \
+  wayland wayland-protocols
+
+git clone --recursive https://github.com/Anto426/rofi ~/Git/arch/rofi
+meson setup ~/Git/arch/rofi/build-anto426 ~/Git/arch/rofi --prefix ~/.local/rofi-anto426
+meson compile -C ~/Git/arch/rofi/build-anto426
+meson install -C ~/Git/arch/rofi/build-anto426
+mkdir -p ~/.local/bin
+ln -sfn ~/.local/rofi-anto426/bin/rofi ~/.local/bin/rofi
+```
+
+Verify that the slider-enabled dmenu options are present:
+
+```bash
+~/.local/bin/rofi -help | grep slider
+```
 
 ## Quickstart
 
