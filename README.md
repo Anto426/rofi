@@ -1,4 +1,65 @@
 <p align="center">
+  <img 
+    src="https://wsrv.nl/?url=avatars.githubusercontent.com/u/87477585?v=5&w=300&h=300&mask=circle&fit=cover" 
+    width="150"
+  />
+</p>
+
+<p align="center">
+  <a href="https://git.io/typing-svg"><img src="https://readme-typing-svg.demolab.com?font=JetBrains+Mono&weight=600&size=24&duration=3000&pause=1000&color=8cb8e4&center=true&vCenter=true&width=500&height=80&lines=Anto426+Rofi+Fork;Wayland+Slider+Support;Dynamic+Control+Menus" alt="Typing SVG" /></a>
+</p>
+
+<p align="center">
+  <img src="https://raw.githubusercontent.com/Anto426/Anto426/main/asset/divider.gif" width="440" height="40" />
+</p>
+
+# <img src="https://raw.githubusercontent.com/Anto426/Anto426/main/asset/icon.gif" width="60px" /> Custom Fork Features;
+
+```sh
+root@anto426: ~/rofi (main⚡)$ cat fork_info.txt
+
+This repository is a customized fork of davatorium/rofi.
+It serves as a core dependency for the Anto426 Arch-Hyprland ecosystem, enabling interactive slider widgets
+inside control panel menus to adjust live sound outputs, microphone inputs, and screen brightness.
+```
+
+<p align="center">
+  <img src="https://raw.githubusercontent.com/Anto426/Anto426/main/asset/divider.gif" width="440" height="40" />
+</p>
+
+# <img src="https://raw.githubusercontent.com/Anto426/Anto426/main/asset/icon2.gif" width="70px" /> Arch Compilation;
+
+```sh
+root@anto426: ~/rofi (main⚡)$ ./compile.sh
+
+On Arch Linux, satisfy the dependencies and install the slider-enabled build system-wide:
+```
+
+```bash
+sudo pacman -S --needed base-devel git meson ninja pkgconf flex bison check pandoc doxygen \
+  glib2 cairo pango gdk-pixbuf2 startup-notification libxkbcommon libxcb \
+  xcb-util xcb-util-wm xcb-util-cursor xcb-util-keysyms xcb-imdkit \
+  wayland wayland-protocols
+
+git clone --recursive https://github.com/Anto426/rofi ~/Git/arch/rofi
+meson setup ~/Git/arch/rofi/build-anto426 ~/Git/arch/rofi --prefix /usr
+meson compile -C ~/Git/arch/rofi/build-anto426
+sudo meson install -C ~/Git/arch/rofi/build-anto426
+```
+
+Verify that the custom slider inputs are correctly supported by your Rofi build:
+
+```bash
+rofi -help | grep slider
+```
+
+<p align="center">
+  <img src="https://raw.githubusercontent.com/Anto426/Anto426/main/asset/divider.gif" width="440" height="40" />
+</p>
+
+# <img src="https://raw.githubusercontent.com/Anto426/Anto426/main/asset/icon3.gif" width="70px" /> Original Rofi Specs;
+
+<p align="center">
 <a href="https://github.com/davatorium/rofi/issues"><img src="https://img.shields.io/github/issues/davatorium/rofi.svg"></a>
 <a href="https://img.shields.io/github/forks/davatorium/rofi.svg"><img src="https://img.shields.io/github/forks/davatorium/rofi.svg"></a>
 <a href="https://github.com/davatorium/rofi/stargazers"><img src="https://img.shields.io/github/stars/davatorium/rofi.svg"></a>
@@ -221,30 +282,6 @@ new issue.
 Please see the [installation guide](INSTALL.md) for instructions on how to
 install **Rofi**.
 
-### Anto426 Arch-Hyprland build
-
-This fork is used by the Anto426 Arch-Hyprland dotfiles for live audio,
-microphone, and brightness slider panels. On Arch, install the build
-dependencies and install it system-wide to replace the default package:
-
-```bash
-sudo pacman -S --needed base-devel git meson ninja pkgconf flex bison check pandoc doxygen \
-  glib2 cairo pango gdk-pixbuf2 startup-notification libxkbcommon libxcb \
-  xcb-util xcb-util-wm xcb-util-cursor xcb-util-keysyms xcb-imdkit \
-  wayland wayland-protocols
-
-git clone --recursive https://github.com/Anto426/rofi ~/Git/arch/rofi
-meson setup ~/Git/arch/rofi/build-anto426 ~/Git/arch/rofi --prefix /usr
-meson compile -C ~/Git/arch/rofi/build-anto426
-sudo meson install -C ~/Git/arch/rofi/build-anto426
-```
-
-Verify that the slider-enabled dmenu options are present:
-
-```bash
-rofi -help | grep slider
-```
-
 ## Quickstart
 
 ### Usage
@@ -281,7 +318,7 @@ For syntax to `-combi-modes`, see `-modes`.
 To get one merge view, of `window`,`run`, and `ssh`:
 
 ```bash
- rofi -show combi -combi-modes "window,run,ssh" -modes combi
+    rofi -show combi -combi-modes "window,run,ssh" -modes combi
 ```
 
 ### Configuration
@@ -353,3 +390,11 @@ preferred location for discussions.
 ### Stargazers over time
 
 [![Stargazers over time](https://starchart.cc/davatorium/rofi.svg)](https://starchart.cc/davatorium/rofi)
+
+<p align="center">
+  <img src="https://raw.githubusercontent.com/Anto426/Anto426/main/asset/divider.gif" width="440" height="40" />
+</p>
+
+<div align="center">
+  <i>Maintained by the anto426 ecosystem</i>
+</div>
