@@ -190,7 +190,7 @@ sudo pacman -S --needed base-devel git meson ninja pkgconf flex bison check pand
 Build and install:
 
 ```bash
-git clone --recursive https://github.com/Anto426/rofi ~/Git/arch/rofi
+git clone --recursive https://github.com/Arch-repo/rofi ~/Git/arch/rofi
 meson setup ~/Git/arch/rofi/build-anto426 ~/Git/arch/rofi --prefix ~/.local/rofi-anto426
 meson compile -C ~/Git/arch/rofi/build-anto426
 meson install -C ~/Git/arch/rofi/build-anto426
@@ -303,3 +303,4 @@ On macOS rofi can be installed via [MacPorts](https://www.macports.org):
 ```
 
 [master-install]: https://github.com/DaveDavenport/rofi/blob/master/INSTALL.md#install-a-checkout-from-git
+

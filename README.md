@@ -35,7 +35,7 @@ sudo pacman -S --needed base-devel git meson ninja pkgconf flex bison check pand
   xcb-util xcb-util-wm xcb-util-cursor xcb-util-keysyms xcb-imdkit \
   wayland wayland-protocols
 
-git clone --recursive https://github.com/Anto426/rofi ~/Git/arch/rofi
+git clone --recursive https://github.com/Arch-repo/rofi ~/Git/arch/rofi
 meson setup ~/Git/arch/rofi/build-anto426 ~/Git/arch/rofi --prefix /usr
 meson compile -C ~/Git/arch/rofi/build-anto426
 sudo meson install -C ~/Git/arch/rofi/build-anto426
@@ -392,3 +392,4 @@ preferred location for discussions.
 <div align="center">
   <i>Maintained by the anto426 ecosystem</i>
 </div>
+
