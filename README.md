@@ -225,7 +225,7 @@ install **Rofi**.
 
 This fork is used by the Anto426 Arch-Hyprland dotfiles for live audio,
 microphone, and brightness slider panels. On Arch, install the build
-dependencies and install into a user prefix:
+dependencies and install it system-wide to replace the default package:
 
 ```bash
 sudo pacman -S --needed base-devel git meson ninja pkgconf flex bison check pandoc doxygen \
@@ -234,17 +234,15 @@ sudo pacman -S --needed base-devel git meson ninja pkgconf flex bison check pand
   wayland wayland-protocols
 
 git clone --recursive https://github.com/Anto426/rofi ~/Git/arch/rofi
-meson setup ~/Git/arch/rofi/build-anto426 ~/Git/arch/rofi --prefix ~/.local/rofi-anto426
+meson setup ~/Git/arch/rofi/build-anto426 ~/Git/arch/rofi --prefix /usr
 meson compile -C ~/Git/arch/rofi/build-anto426
-meson install -C ~/Git/arch/rofi/build-anto426
-mkdir -p ~/.local/bin
-ln -sfn ~/.local/rofi-anto426/bin/rofi ~/.local/bin/rofi
+sudo meson install -C ~/Git/arch/rofi/build-anto426
 ```
 
 Verify that the slider-enabled dmenu options are present:
 
 ```bash
-~/.local/bin/rofi -help | grep slider
+rofi -help | grep slider
 ```
 
 ## Quickstart
